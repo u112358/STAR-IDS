@@ -3,7 +3,7 @@ import scipy.io as sio
 
 
 class DataReader:
-    def __init__(self, path, mode, shuffle=True):
+    def __init__(self, path, mode, shuffle=False, seed=2020):
         self.mode = mode
         self.shuffle = shuffle
         self.mat = sio.loadmat(path)
@@ -15,12 +15,13 @@ class DataReader:
         self.size_of_abnormal_data = len(self.data_abnormal)
         self.idx_normal = np.arange(self.size_of_normal_data)
         self.idx_abnormal = np.arange(self.size_of_abnormal_data)
+        self.sub_train, self.sub_val, self.sub_test, self.idx_sub_train, self.current_sub_index = self.split()
+        np.random.seed(seed)
         if shuffle:
             print('shuffling the dataset ...')
             np.random.shuffle(self.idx_abnormal)
             np.random.shuffle(self.idx_normal)
             print('done!')
-        self.sub_train, self.sub_val, self.sub_test, self.idx_sub_train, self.current_sub_index = self.split()
 
     # construct a sub dataset for KDDTrain+ only setting
     def split(self):
